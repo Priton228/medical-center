@@ -8,7 +8,6 @@ import com.medcenter.exception.BadRequestException;
 import com.medcenter.exception.NotFoundException;
 import com.medcenter.mapper.Mappers;
 import com.medcenter.repository.*;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,8 +21,16 @@ import java.util.Optional;
  * соответствующей специализации и сохраняет историю в БД.
  */
 @Service
-@RequiredArgsConstructor
 public class RecommendationService {
+    public RecommendationService(SymptomRepository symptomRepository, DiagnosisRepository diagnosisRepository, DoctorRepository doctorRepository, PatientRepository patientRepository, RecommendationRepository recommendationRepository, SymptomMatchingStrategy matchingStrategy) {
+        this.symptomRepository = symptomRepository;
+        this.diagnosisRepository = diagnosisRepository;
+        this.doctorRepository = doctorRepository;
+        this.patientRepository = patientRepository;
+        this.recommendationRepository = recommendationRepository;
+        this.matchingStrategy = matchingStrategy;
+    }
+
 
     private final SymptomRepository symptomRepository;
     private final DiagnosisRepository diagnosisRepository;

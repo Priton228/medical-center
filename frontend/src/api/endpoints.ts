@@ -22,6 +22,21 @@ export const usersApi = {
     api.put<UserResponse>('/api/v1/users/me', data).then((r) => r.data),
 };
 
+export const adminUsersApi = {
+  create: (data: {
+    username: string; email: string; password: string;
+    fullName: string; phone?: string | null; roles: string[];
+  }) => api.post<UserResponse>('/api/v1/admin/users', data).then((r) => r.data),
+  update: (id: number, data: {
+    email: string; fullName: string; phone?: string | null;
+    enabled?: boolean; roles?: string[]; newPassword?: string | null;
+  }) => api.put<UserResponse>(`/api/v1/admin/users/${id}`, data).then((r) => r.data),
+  setRoles: (id: number, roles: string[]) =>
+    api.patch<UserResponse>(`/api/v1/admin/users/${id}/roles`, { roles }).then((r) => r.data),
+  delete: (id: number) =>
+    api.delete(`/api/v1/admin/users/${id}`).then((r) => r.data),
+};
+
 export const doctorsApi = {
   list: (page = 0, size = 100, specialization?: string) => {
     const params = new URLSearchParams();

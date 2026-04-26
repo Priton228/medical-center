@@ -4,7 +4,6 @@ import com.medcenter.dto.AppointmentDtos;
 import com.medcenter.security.AuthenticatedUser;
 import com.medcenter.service.AppointmentService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -18,8 +17,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/appointments")
-@RequiredArgsConstructor
 public class AppointmentController {
+    public AppointmentController(AppointmentService appointmentService, AuthenticatedUser currentUser) {
+        this.appointmentService = appointmentService;
+        this.currentUser = currentUser;
+    }
+
 
     private final AppointmentService appointmentService;
     private final AuthenticatedUser currentUser;

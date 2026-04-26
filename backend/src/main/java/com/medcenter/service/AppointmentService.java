@@ -13,7 +13,6 @@ import com.medcenter.mapper.Mappers;
 import com.medcenter.repository.AppointmentRepository;
 import com.medcenter.repository.DoctorRepository;
 import com.medcenter.repository.PatientRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -23,8 +22,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class AppointmentService {
+    public AppointmentService(AppointmentRepository appointmentRepository, PatientRepository patientRepository, DoctorRepository doctorRepository) {
+        this.appointmentRepository = appointmentRepository;
+        this.patientRepository = patientRepository;
+        this.doctorRepository = doctorRepository;
+    }
+
 
     private final AppointmentRepository appointmentRepository;
     private final PatientRepository patientRepository;

@@ -4,7 +4,6 @@ import com.medcenter.dto.MedicalRecordDtos;
 import com.medcenter.security.AuthenticatedUser;
 import com.medcenter.service.MedicalRecordService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,8 +13,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/medical-records")
-@RequiredArgsConstructor
 public class MedicalRecordController {
+    public MedicalRecordController(MedicalRecordService service, AuthenticatedUser currentUser) {
+        this.service = service;
+        this.currentUser = currentUser;
+    }
+
 
     private final MedicalRecordService service;
     private final AuthenticatedUser currentUser;

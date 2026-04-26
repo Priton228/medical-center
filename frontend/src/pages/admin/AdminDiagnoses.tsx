@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-import { Plus, Trash2 } from 'lucide-react';
+import { BookOpen, Plus, Trash2 } from 'lucide-react';
 import PageHeader from '@/components/PageHeader';
 import Loader from '@/components/Loader';
+import EmptyState from '@/components/EmptyState';
 import { diagnosesApi, symptomsApi } from '@/api/endpoints';
 
 export default function AdminDiagnoses() {
@@ -67,9 +68,17 @@ export default function AdminDiagnoses() {
         </div>
       </div>
 
-      {diagnoses.isLoading ? <Loader /> : (
+      {diagnoses.isLoading ? (
+        <Loader />
+      ) : !diagnoses.data || diagnoses.data.length === 0 ? (
+        <EmptyState
+          title="Нет данных по диагнозам"
+          description="Добавьте первый диагноз и свяжите его с симптомами для рекомендаций."
+          icon={<BookOpen size={32} />}
+        />
+      ) : (
         <div className="card divide-y divide-brand-50">
-          {diagnoses.data!.map((d) => (
+          {diagnoses.data.map((d) => (
             <div key={d.id} className="py-3 flex items-start justify-between gap-3">
               <div>
                 <div className="font-medium text-slate-900">{d.name} <span className="chip ml-2">{d.specialization}</span></div>

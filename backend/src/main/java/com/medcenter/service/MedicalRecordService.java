@@ -12,15 +12,20 @@ import com.medcenter.repository.AppointmentRepository;
 import com.medcenter.repository.DoctorRepository;
 import com.medcenter.repository.MedicalRecordRepository;
 import com.medcenter.repository.PatientRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class MedicalRecordService {
+    public MedicalRecordService(MedicalRecordRepository repository, PatientRepository patientRepository, DoctorRepository doctorRepository, AppointmentRepository appointmentRepository) {
+        this.repository = repository;
+        this.patientRepository = patientRepository;
+        this.doctorRepository = doctorRepository;
+        this.appointmentRepository = appointmentRepository;
+    }
+
 
     private final MedicalRecordRepository repository;
     private final PatientRepository patientRepository;

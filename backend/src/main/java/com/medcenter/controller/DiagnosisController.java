@@ -3,7 +3,6 @@ package com.medcenter.controller;
 import com.medcenter.dto.DiagnosisDtos;
 import com.medcenter.service.DiagnosisService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,8 +12,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/diagnoses")
-@RequiredArgsConstructor
 public class DiagnosisController {
+    public DiagnosisController(DiagnosisService diagnosisService) {
+        this.diagnosisService = diagnosisService;
+    }
+
 
     private final DiagnosisService diagnosisService;
 

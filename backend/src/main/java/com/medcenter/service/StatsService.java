@@ -4,7 +4,6 @@ import com.medcenter.domain.Appointment;
 import com.medcenter.domain.enums.AppointmentStatus;
 import com.medcenter.dto.StatsDtos;
 import com.medcenter.repository.*;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,8 +12,16 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class StatsService {
+    public StatsService(UserRepository userRepository, PatientRepository patientRepository, DoctorRepository doctorRepository, AppointmentRepository appointmentRepository, SymptomRepository symptomRepository, DiagnosisRepository diagnosisRepository) {
+        this.userRepository = userRepository;
+        this.patientRepository = patientRepository;
+        this.doctorRepository = doctorRepository;
+        this.appointmentRepository = appointmentRepository;
+        this.symptomRepository = symptomRepository;
+        this.diagnosisRepository = diagnosisRepository;
+    }
+
 
     private final UserRepository userRepository;
     private final PatientRepository patientRepository;

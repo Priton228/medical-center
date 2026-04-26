@@ -31,7 +31,11 @@ public class DoctorDtos {
         String phone,
         @NotBlank String specialization,
         String bio,
-        String roomNumber
+        String photoUrl,
+        String roomNumber,
+        LocalTime workStart,
+        LocalTime workEnd,
+        Boolean available
     ) {}
 
     public record UpdateDoctorRequest(

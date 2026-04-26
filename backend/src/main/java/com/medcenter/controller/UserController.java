@@ -4,7 +4,6 @@ import com.medcenter.dto.UserDtos;
 import com.medcenter.security.AuthenticatedUser;
 import com.medcenter.service.UserService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -12,8 +11,12 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/users")
-@RequiredArgsConstructor
 public class UserController {
+    public UserController(UserService userService, AuthenticatedUser currentUser) {
+        this.userService = userService;
+        this.currentUser = currentUser;
+    }
+
 
     private final UserService userService;
     private final AuthenticatedUser currentUser;

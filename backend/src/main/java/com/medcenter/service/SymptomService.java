@@ -6,15 +6,17 @@ import com.medcenter.exception.ConflictException;
 import com.medcenter.exception.NotFoundException;
 import com.medcenter.mapper.Mappers;
 import com.medcenter.repository.SymptomRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class SymptomService {
+    public SymptomService(SymptomRepository symptomRepository) {
+        this.symptomRepository = symptomRepository;
+    }
+
 
     private final SymptomRepository symptomRepository;
 

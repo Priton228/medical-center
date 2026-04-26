@@ -11,7 +11,6 @@ import com.medcenter.mapper.Mappers;
 import com.medcenter.repository.DoctorRepository;
 import com.medcenter.repository.RoleRepository;
 import com.medcenter.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,8 +20,14 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class DoctorService {
+    public DoctorService(DoctorRepository doctorRepository, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+        this.doctorRepository = doctorRepository;
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
 
     private final DoctorRepository doctorRepository;
     private final UserRepository userRepository;
@@ -68,12 +73,17 @@ public class DoctorService {
             .build();
         user.getRoles().add(role);
         user = userRepository.save(user);
+        java.time.LocalTime workStart = req.workStart() != null ? req.workStart() : java.time.LocalTime.of(9, 0);
+        java.time.LocalTime workEnd = req.workEnd() != null ? req.workEnd() : java.time.LocalTime.of(18, 0);
         Doctor doctor = Doctor.builder()
             .user(user)
             .specialization(req.specialization())
             .bio(req.bio())
+            .photoUrl(req.photoUrl())
             .roomNumber(req.roomNumber())
-            .available(true)
+            .workStart(workStart)
+            .workEnd(workEnd)
+            .available(req.available() == null ? true : req.available())
             .build();
         return Mappers.toDoctorResponse(doctorRepository.save(doctor));
     }
