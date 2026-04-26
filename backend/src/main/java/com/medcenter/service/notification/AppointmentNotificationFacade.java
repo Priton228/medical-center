@@ -163,7 +163,7 @@ public class AppointmentNotificationFacade {
             .append("</td></tr>");
         sb.append("</table>");
         if (withConfirmButtons && a.getConfirmToken() != null) {
-            String base = properties.getUploads().getPublicBaseUrl();
+            String base = properties.getNotifications().getPublicBackendUrl();
             String confirm = base + "/api/v1/appointments/confirm?token=" + a.getConfirmToken();
             String reject  = base + "/api/v1/appointments/reject?token="  + a.getConfirmToken();
             sb.append("<p style='margin-top:16px'>")

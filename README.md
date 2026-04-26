@@ -122,7 +122,8 @@ medcenter:
     enabled: true
     from-address: ${MEDCENTER_NOTIFICATIONS_FROM:noreply@medcenter.local}
     reminder-hours-before: 24
-    frontend-url: ${MEDCENTER_FRONTEND_URL:http://localhost:5173}
+    public-frontend-url: ${MEDCENTER_PUBLIC_FRONTEND_URL:http://localhost:5173}
+    public-backend-url: ${MEDCENTER_PUBLIC_BACKEND_URL:http://localhost:8080}
   google-calendar:
     enabled: ${MEDCENTER_GOOGLE_CALENDAR_ENABLED:false}
     service-account-json: ${GOOGLE_SERVICE_ACCOUNT_JSON:}

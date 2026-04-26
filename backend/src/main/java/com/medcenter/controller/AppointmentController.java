@@ -78,17 +78,12 @@ public class AppointmentController {
         return appointmentService.reschedule(id, req, currentUser.current().getLogin(), isAdmin);
     }
 
-    /** Подтверждение записи по одноразовой ссылке из письма (без авторизации). */
-    @GetMapping("/confirm")
-    public AppointmentDtos.AppointmentResponse confirmByToken(@RequestParam("token") String token) {
-        return appointmentService.confirmByToken(token);
-    }
-
-    /** Отмена записи по одноразовой ссылке из письма (без авторизации). */
-    @GetMapping("/reject")
-    public AppointmentDtos.AppointmentResponse rejectByToken(@RequestParam("token") String token) {
-        return appointmentService.rejectByToken(token);
-    }
+    /*
+     * Подтверждение/отмена по одноразовой ссылке из писем обрабатываются в
+     * {@link AppointmentTokenController} (HTML-страница на GET, мутирующий POST).
+     * GET специально не выполняет действие, чтобы избежать «case prefetch»
+     * почтовыми клиентами.
+     */
 
     private static boolean hasAuthority(java.util.Collection<? extends GrantedAuthority> auths, String name) {
         return auths != null && auths.stream().anyMatch(a -> a.getAuthority().equals(name));

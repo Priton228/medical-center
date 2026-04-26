@@ -26,6 +26,11 @@ public class MedcenterProperties {
         private String fromAddress = "no-reply@medical-center.local";
         private String fromName = "МедЦентр";
         private String publicFrontendUrl = "http://localhost:5173";
+        /**
+         * Публичный URL backend-API, на который пользователь попадёт по ссылкам
+         * «Подтвердить» / «Отменить» из писем. Должен быть доступен снаружи.
+         */
+        private String publicBackendUrl = "http://localhost:8080";
         private int reminderHoursBefore = 24;
     }
 

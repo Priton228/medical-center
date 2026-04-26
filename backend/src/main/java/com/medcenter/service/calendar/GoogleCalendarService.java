@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
-import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -129,14 +129,16 @@ public class GoogleCalendarService {
             .setSummary("Приём у врача — " + a.getDoctor().getUser().getFullName())
             .setDescription(buildDescription(a))
             .setLocation("Кабинет " + (a.getDoctor().getRoomNumber() == null ? "—" : a.getDoctor().getRoomNumber()));
-        ZonedDateTime start = a.getAppointmentDate().atZone(ZoneId.systemDefault());
+        // appointmentDate хранится в UTC (см. spring.jpa.properties.hibernate.jdbc.time_zone=UTC),
+        // поэтому интерпретируем LocalDateTime как UTC, а не как системную TZ.
+        ZonedDateTime start = a.getAppointmentDate().atZone(ZoneOffset.UTC);
         ZonedDateTime end = start.plusMinutes(30);
         event.setStart(new EventDateTime()
             .setDateTime(new com.google.api.client.util.DateTime(start.toInstant().toEpochMilli()))
-            .setTimeZone(ZoneId.systemDefault().getId()));
+            .setTimeZone("UTC"));
         event.setEnd(new EventDateTime()
             .setDateTime(new com.google.api.client.util.DateTime(end.toInstant().toEpochMilli()))
-            .setTimeZone(ZoneId.systemDefault().getId()));
+            .setTimeZone("UTC"));
         if (a.getPatient().getUser().getEmail() != null) {
             event.setAttendees(Collections.singletonList(
                 new EventAttendee().setEmail(a.getPatient().getUser().getEmail())));

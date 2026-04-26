@@ -25,7 +25,7 @@ public final class IcsBuilder {
             a.getAppointmentDate().plusMinutes(30),
             "Приём у врача — " + a.getDoctor().getUser().getFullName(),
             "Специализация: " + a.getDoctor().getSpecialization()
-                + (a.getNotes() != null ? "\\nЗаметка: " + a.getNotes() : ""),
+                + (a.getNotes() != null ? "\nЗаметка: " + a.getNotes() : ""),
             "Кабинет " + (a.getDoctor().getRoomNumber() == null ? "—" : a.getDoctor().getRoomNumber()),
             method
         );
