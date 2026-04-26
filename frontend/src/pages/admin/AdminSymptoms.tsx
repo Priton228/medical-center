@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-import { Plus, Trash2 } from 'lucide-react';
+import { ListChecks, Plus, Trash2 } from 'lucide-react';
 import PageHeader from '@/components/PageHeader';
 import Loader from '@/components/Loader';
+import EmptyState from '@/components/EmptyState';
 import { symptomsApi } from '@/api/endpoints';
 
 export default function AdminSymptoms() {
@@ -33,9 +34,17 @@ export default function AdminSymptoms() {
         <input className="input md:col-span-1" placeholder="Описание" value={description} onChange={(e) => setDescription(e.target.value)} />
         <button className="btn-primary" disabled={!name || add.isPending} onClick={() => add.mutate()}><Plus size={16} /> Добавить</button>
       </div>
-      {isLoading ? <Loader /> : (
+      {isLoading ? (
+        <Loader />
+      ) : !data || data.length === 0 ? (
+        <EmptyState
+          title="Нет данных по симптомам"
+          description="Добавьте первый симптом для использования в подсказках диагнозов."
+          icon={<ListChecks size={32} />}
+        />
+      ) : (
         <div className="card divide-y divide-brand-50">
-          {data!.map((s) => (
+          {data.map((s) => (
             <div key={s.id} className="flex items-center justify-between py-2">
               <div>
                 <div className="font-medium text-slate-900">{s.name}</div>

@@ -3,7 +3,6 @@ package com.medcenter.controller;
 import com.medcenter.dto.SymptomDtos;
 import com.medcenter.service.SymptomService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,8 +12,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/symptoms")
-@RequiredArgsConstructor
 public class SymptomController {
+    public SymptomController(SymptomService symptomService) {
+        this.symptomService = symptomService;
+    }
+
 
     private final SymptomService symptomService;
 

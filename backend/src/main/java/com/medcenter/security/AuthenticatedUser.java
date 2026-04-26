@@ -3,14 +3,16 @@ package com.medcenter.security;
 import com.medcenter.domain.User;
 import com.medcenter.exception.ForbiddenException;
 import com.medcenter.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 @Component
-@RequiredArgsConstructor
 public class AuthenticatedUser {
+    public AuthenticatedUser(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
 
     private final UserRepository userRepository;
 

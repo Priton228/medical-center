@@ -4,7 +4,6 @@ import com.medcenter.dto.RecommendationDtos;
 import com.medcenter.security.AuthenticatedUser;
 import com.medcenter.service.RecommendationService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,9 +11,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/recommendations")
-@RequiredArgsConstructor
 @PreAuthorize("hasRole('PATIENT')")
 public class RecommendationController {
+    public RecommendationController(RecommendationService recommendationService, AuthenticatedUser currentUser) {
+        this.recommendationService = recommendationService;
+        this.currentUser = currentUser;
+    }
+
 
     private final RecommendationService recommendationService;
     private final AuthenticatedUser currentUser;

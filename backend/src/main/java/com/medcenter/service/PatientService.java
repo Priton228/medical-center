@@ -11,7 +11,6 @@ import com.medcenter.mapper.Mappers;
 import com.medcenter.repository.PatientRepository;
 import com.medcenter.repository.RoleRepository;
 import com.medcenter.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,8 +18,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@RequiredArgsConstructor
 public class PatientService {
+    public PatientService(PatientRepository patientRepository, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+        this.patientRepository = patientRepository;
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
 
     private final PatientRepository patientRepository;
     private final UserRepository userRepository;

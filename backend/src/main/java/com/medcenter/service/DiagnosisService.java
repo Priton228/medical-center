@@ -7,7 +7,6 @@ import com.medcenter.exception.NotFoundException;
 import com.medcenter.mapper.Mappers;
 import com.medcenter.repository.DiagnosisRepository;
 import com.medcenter.repository.SymptomRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,8 +14,12 @@ import java.util.HashSet;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class DiagnosisService {
+    public DiagnosisService(DiagnosisRepository diagnosisRepository, SymptomRepository symptomRepository) {
+        this.diagnosisRepository = diagnosisRepository;
+        this.symptomRepository = symptomRepository;
+    }
+
 
     private final DiagnosisRepository diagnosisRepository;
     private final SymptomRepository symptomRepository;

@@ -4,7 +4,6 @@ import com.medcenter.dto.DoctorDtos;
 import com.medcenter.security.AuthenticatedUser;
 import com.medcenter.service.DoctorService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -16,8 +15,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/doctors")
-@RequiredArgsConstructor
 public class DoctorController {
+    public DoctorController(DoctorService doctorService, AuthenticatedUser currentUser) {
+        this.doctorService = doctorService;
+        this.currentUser = currentUser;
+    }
+
 
     private final DoctorService doctorService;
     private final AuthenticatedUser currentUser;

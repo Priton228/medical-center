@@ -4,7 +4,6 @@ import com.medcenter.dto.PatientDtos;
 import com.medcenter.security.AuthenticatedUser;
 import com.medcenter.service.PatientService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -14,8 +13,12 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/patients")
-@RequiredArgsConstructor
 public class PatientController {
+    public PatientController(PatientService patientService, AuthenticatedUser currentUser) {
+        this.patientService = patientService;
+        this.currentUser = currentUser;
+    }
+
 
     private final PatientService patientService;
     private final AuthenticatedUser currentUser;

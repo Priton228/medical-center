@@ -80,7 +80,7 @@ export default function LoginPage() {
             Нет аккаунта? <Link className="text-brand-600 font-medium" to="/register">Зарегистрироваться</Link>
           </div>
           <div className="text-xs text-slate-400 border-t pt-3 mt-2">
-            Демо-учётки (пароль <b>password</b>): <code>admin</code>, <code>doctor.ivanov</code>, <code>patient.sidorov</code>
+            Учётная запись администратора по умолчанию — логин <code>admin</code>, пароль <code>admin</code>.
           </div>
         </form>
       </motion.div>
