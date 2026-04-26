@@ -28,7 +28,7 @@ public class AppointmentController {
     @PreAuthorize("hasRole('PATIENT')")
     public ResponseEntity<AppointmentDtos.AppointmentResponse> create(@Valid @RequestBody AppointmentDtos.CreateAppointmentRequest req) {
         return ResponseEntity.status(HttpStatus.CREATED)
-            .body(appointmentService.createForPatient(currentUser.current().getUsername(), req));
+            .body(appointmentService.createForPatient(currentUser.current().getLogin(), req));
     }
 
     @GetMapping
@@ -42,9 +42,9 @@ public class AppointmentController {
         var auth = SecurityContextHolder.getContext().getAuthentication();
         boolean isDoctor = hasAuthority(auth.getAuthorities(), "ROLE_DOCTOR");
         if (isDoctor) {
-            return appointmentService.listForDoctor(currentUser.current().getUsername(), pageable);
+            return appointmentService.listForDoctor(currentUser.current().getLogin(), pageable);
         }
-        return appointmentService.listForPatient(currentUser.current().getUsername(), pageable);
+        return appointmentService.listForPatient(currentUser.current().getLogin(), pageable);
     }
 
     @GetMapping("/me/upcoming")
@@ -52,9 +52,9 @@ public class AppointmentController {
         var auth = SecurityContextHolder.getContext().getAuthentication();
         boolean isDoctor = hasAuthority(auth.getAuthorities(), "ROLE_DOCTOR");
         if (isDoctor) {
-            return appointmentService.upcomingForDoctor(currentUser.current().getUsername());
+            return appointmentService.upcomingForDoctor(currentUser.current().getLogin());
         }
-        return appointmentService.upcomingForPatient(currentUser.current().getUsername());
+        return appointmentService.upcomingForPatient(currentUser.current().getLogin());
     }
 
     @GetMapping("/{id}")
@@ -66,7 +66,28 @@ public class AppointmentController {
     public AppointmentDtos.AppointmentResponse changeStatus(@PathVariable Long id, @Valid @RequestBody AppointmentDtos.UpdateStatusRequest req) {
         var auth = SecurityContextHolder.getContext().getAuthentication();
         boolean isAdmin = hasAuthority(auth.getAuthorities(), "ROLE_ADMIN");
-        return appointmentService.changeStatus(id, req.status(), currentUser.current().getUsername(), isAdmin);
+        return appointmentService.changeStatus(id, req.status(), currentUser.current().getLogin(), isAdmin);
+    }
+
+    /** Перенос приёма на новое время — пациентом, врачом или админом. */
+    @PatchMapping("/{id}/reschedule")
+    public AppointmentDtos.AppointmentResponse reschedule(@PathVariable Long id,
+                                                          @Valid @RequestBody AppointmentDtos.RescheduleRequest req) {
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        boolean isAdmin = hasAuthority(auth.getAuthorities(), "ROLE_ADMIN");
+        return appointmentService.reschedule(id, req, currentUser.current().getLogin(), isAdmin);
+    }
+
+    /** Подтверждение записи по одноразовой ссылке из письма (без авторизации). */
+    @GetMapping("/confirm")
+    public AppointmentDtos.AppointmentResponse confirmByToken(@RequestParam("token") String token) {
+        return appointmentService.confirmByToken(token);
+    }
+
+    /** Отмена записи по одноразовой ссылке из письма (без авторизации). */
+    @GetMapping("/reject")
+    public AppointmentDtos.AppointmentResponse rejectByToken(@RequestParam("token") String token) {
+        return appointmentService.rejectByToken(token);
     }
 
     private static boolean hasAuthority(java.util.Collection<? extends GrantedAuthority> auths, String name) {

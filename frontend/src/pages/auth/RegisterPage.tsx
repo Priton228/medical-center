@@ -9,7 +9,7 @@ type RoleChoice = 'ROLE_PATIENT' | 'ROLE_DOCTOR';
 
 export default function RegisterPage() {
   const [form, setForm] = useState({
-    username: '', email: '', password: '', fullName: '', phone: '',
+    login: '', email: '', password: '', fullName: '', phone: '',
     role: 'ROLE_PATIENT' as RoleChoice,
     birthDate: '', address: '', insuranceNumber: '',
     specialization: '', bio: '',
@@ -27,7 +27,7 @@ export default function RegisterPage() {
     setBusy(true);
     try {
       const payload: any = {
-        username: form.username,
+        login: form.login,
         email: form.email,
         password: form.password,
         fullName: form.fullName,
@@ -62,7 +62,7 @@ export default function RegisterPage() {
       >
         <h2 className="text-2xl font-bold text-slate-800">Регистрация</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          <div><label className="label">Логин</label><input className="input" required value={form.username} onChange={handle('username')} /></div>
+          <div><label className="label">Логин</label><input className="input" required value={form.login} onChange={handle('login')} pattern="[A-Za-z0-9._-]{3,64}" title="3–64 символа: латиница, цифры, . _ -" /></div>
           <div><label className="label">Email</label><input className="input" type="email" required value={form.email} onChange={handle('email')} /></div>
           <div><label className="label">Пароль</label><input className="input" type="password" required minLength={6} value={form.password} onChange={handle('password')} /></div>
           <div><label className="label">ФИО</label><input className="input" required value={form.fullName} onChange={handle('fullName')} /></div>

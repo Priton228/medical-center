@@ -42,13 +42,19 @@ public class DoctorController {
     @GetMapping("/me")
     @PreAuthorize("hasRole('DOCTOR')")
     public DoctorDtos.DoctorResponse me() {
-        return doctorService.getByUsername(currentUser.current().getUsername());
+        return doctorService.getByUsername(currentUser.current().getLogin());
     }
 
     @PutMapping("/me/schedule")
     @PreAuthorize("hasRole('DOCTOR')")
     public DoctorDtos.DoctorResponse updateMySchedule(@Valid @RequestBody DoctorDtos.UpdateScheduleRequest req) {
-        return doctorService.updateOwnSchedule(currentUser.current().getUsername(), req);
+        return doctorService.updateOwnSchedule(currentUser.current().getLogin(), req);
+    }
+
+    @PatchMapping("/me")
+    @PreAuthorize("hasRole('DOCTOR')")
+    public DoctorDtos.DoctorResponse updateMyProfile(@Valid @RequestBody DoctorDtos.UpdateOwnProfileRequest req) {
+        return doctorService.updateOwnProfile(currentUser.current().getLogin(), req);
     }
 
     @PostMapping

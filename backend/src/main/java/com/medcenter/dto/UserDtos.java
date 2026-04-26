@@ -10,10 +10,11 @@ public class UserDtos {
 
     public record UserResponse(
         Long id,
-        String username,
+        String login,
         String email,
         String fullName,
         String phone,
+        String avatarUrl,
         boolean enabled,
         Set<String> roles,
         LocalDateTime createdAt
@@ -31,4 +32,6 @@ public class UserDtos {
     ) {}
 
     public record ToggleEnabledRequest(boolean enabled) {}
+
+    public record AvatarResponse(String avatarUrl) {}
 }

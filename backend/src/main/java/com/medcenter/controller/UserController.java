@@ -7,8 +7,10 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -44,5 +46,23 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN')")
     public UserDtos.UserResponse setEnabled(@PathVariable Long id, @RequestBody UserDtos.ToggleEnabledRequest req) {
         return userService.setEnabled(id, req.enabled());
+    }
+
+    /** Загрузка аватара текущего пользователя (multipart). */
+    @PostMapping(value = "/me/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public UserDtos.UserResponse uploadAvatar(@RequestParam("file") MultipartFile file) {
+        return userService.uploadAvatar(currentUser.current(), file);
+    }
+
+    /** Сброс аватара. */
+    @DeleteMapping("/me/avatar")
+    public UserDtos.UserResponse removeAvatar() {
+        return userService.removeAvatar(currentUser.current());
+    }
+
+    /** Возвращает данные текущего пользователя. */
+    @GetMapping("/me")
+    public UserDtos.UserResponse me() {
+        return userService.get(currentUser.current().getId());
     }
 }

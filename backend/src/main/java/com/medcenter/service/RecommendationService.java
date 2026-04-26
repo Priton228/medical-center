@@ -38,7 +38,7 @@ public class RecommendationService {
         if (symptomIds == null || symptomIds.isEmpty()) {
             throw new BadRequestException("Список симптомов не должен быть пустым");
         }
-        Patient patient = patientRepository.findByUserUsername(patientUsername)
+        Patient patient = patientRepository.findByUserLogin(patientUsername)
             .orElseThrow(() -> new NotFoundException("Профиль пациента не найден"));
 
         List<Symptom> symptoms = symptomRepository.findAllById(symptomIds);
@@ -72,7 +72,7 @@ public class RecommendationService {
 
     @Transactional(readOnly = true)
     public List<RecommendationDtos.RecommendationResponse> historyForPatient(String patientUsername) {
-        Patient p = patientRepository.findByUserUsername(patientUsername)
+        Patient p = patientRepository.findByUserLogin(patientUsername)
             .orElseThrow(() -> new NotFoundException("Профиль пациента не найден"));
         return recommendationRepository.findByPatientIdOrderByCreatedAtDesc(p.getId()).stream()
             .map(r -> Mappers.toRecommendationResponse(r, fromJson(r.getSymptomsJson())))

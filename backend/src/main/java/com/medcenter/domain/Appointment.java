@@ -36,6 +36,21 @@ public class Appointment {
     @Column(columnDefinition = "TEXT")
     private String notes;
 
+    /** ID события в Google Calendar (или imitator id). */
+    @Column(name = "calendar_event_id", length = 128)
+    private String calendarEventId;
+
+    /** Токен из писем для одношагового подтверждения/отмены. */
+    @Column(name = "confirm_token", length = 64)
+    private String confirmToken;
+
+    /** Время отправки напоминания за 24 часа (если null — ещё не отправляли). */
+    @Column(name = "reminder_sent_at")
+    private LocalDateTime reminderSentAt;
+
+    @Column(name = "reschedule_count", nullable = false)
+    private int rescheduleCount;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 

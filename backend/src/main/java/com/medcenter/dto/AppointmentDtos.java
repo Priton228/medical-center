@@ -17,6 +17,8 @@ public class AppointmentDtos {
         LocalDateTime appointmentDate,
         AppointmentStatus status,
         String notes,
+        String calendarEventId,
+        int rescheduleCount,
         LocalDateTime createdAt
     ) {}
 
@@ -27,4 +29,9 @@ public class AppointmentDtos {
     ) {}
 
     public record UpdateStatusRequest(@NotNull AppointmentStatus status) {}
+
+    public record RescheduleRequest(
+        @NotNull LocalDateTime appointmentDate,
+        String notes
+    ) {}
 }

@@ -40,13 +40,13 @@ public class PatientService {
 
     @Transactional(readOnly = true)
     public PatientDtos.PatientResponse getByUsername(String username) {
-        return patientRepository.findByUserUsername(username).map(Mappers::toPatientResponse)
+        return patientRepository.findByUserLogin(username).map(Mappers::toPatientResponse)
             .orElseThrow(() -> new NotFoundException("Профиль пациента не найден"));
     }
 
     @Transactional
     public PatientDtos.PatientResponse updateOwn(String username, PatientDtos.UpdatePatientRequest req) {
-        Patient p = patientRepository.findByUserUsername(username)
+        Patient p = patientRepository.findByUserLogin(username)
             .orElseThrow(() -> new NotFoundException("Профиль пациента не найден"));
         p.setBirthDate(req.birthDate());
         p.setAddress(req.address());
@@ -66,12 +66,12 @@ public class PatientService {
 
     @Transactional
     public PatientDtos.PatientResponse create(PatientDtos.CreatePatientRequest req) {
-        if (userRepository.existsByUsername(req.username())) throw new ConflictException("Имя пользователя занято");
+        if (userRepository.existsByLogin(req.login())) throw new ConflictException("Логин занят");
         if (userRepository.existsByEmail(req.email())) throw new ConflictException("Email занят");
         Role role = roleRepository.findByName(RoleName.ROLE_PATIENT)
             .orElseThrow(() -> new NotFoundException("Роль пациента не найдена"));
         User user = User.builder()
-            .username(req.username())
+            .login(req.login())
             .email(req.email())
             .password(passwordEncoder.encode(req.password()))
             .fullName(req.fullName())
@@ -87,5 +87,15 @@ public class PatientService {
             .insuranceNumber(req.insuranceNumber())
             .build();
         return Mappers.toPatientResponse(patientRepository.save(p));
+    }
+
+    /** Удаляет профиль пациента вместе с пользовательской учётной записью. */
+    @Transactional
+    public void delete(Long id) {
+        Patient p = patientRepository.findById(id)
+            .orElseThrow(() -> new NotFoundException("Пациент не найден"));
+        Long userId = p.getUser().getId();
+        patientRepository.delete(p);
+        userRepository.deleteById(userId);
     }
 }

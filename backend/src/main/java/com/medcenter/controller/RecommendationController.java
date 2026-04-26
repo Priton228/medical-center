@@ -21,11 +21,11 @@ public class RecommendationController {
 
     @PostMapping("/analyze")
     public RecommendationDtos.RecommendationResponse analyze(@Valid @RequestBody RecommendationDtos.AnalyzeRequest req) {
-        return recommendationService.analyze(currentUser.current().getUsername(), req.symptomIds());
+        return recommendationService.analyze(currentUser.current().getLogin(), req.symptomIds());
     }
 
     @GetMapping("/me")
     public List<RecommendationDtos.RecommendationResponse> history() {
-        return recommendationService.historyForPatient(currentUser.current().getUsername());
+        return recommendationService.historyForPatient(currentUser.current().getLogin());
     }
 }

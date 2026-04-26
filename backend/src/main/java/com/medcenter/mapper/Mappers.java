@@ -11,7 +11,8 @@ public final class Mappers {
 
     public static UserDtos.UserResponse toUserResponse(User u) {
         return new UserDtos.UserResponse(
-            u.getId(), u.getUsername(), u.getEmail(), u.getFullName(), u.getPhone(), u.isEnabled(),
+            u.getId(), u.getLogin(), u.getEmail(), u.getFullName(), u.getPhone(),
+            u.getAvatarUrl(), u.isEnabled(),
             u.getRoles().stream().map(r -> r.getName().name()).collect(Collectors.toSet()),
             u.getCreatedAt()
         );
@@ -20,7 +21,8 @@ public final class Mappers {
     public static DoctorDtos.DoctorResponse toDoctorResponse(Doctor d) {
         User u = d.getUser();
         return new DoctorDtos.DoctorResponse(
-            d.getId(), u.getId(), u.getUsername(), u.getFullName(), u.getEmail(), u.getPhone(),
+            d.getId(), u.getId(), u.getLogin(), u.getFullName(), u.getEmail(), u.getPhone(),
+            u.getAvatarUrl(),
             d.getSpecialization(), d.getBio(), d.getPhotoUrl(), d.isAvailable(),
             d.getWorkStart(), d.getWorkEnd(), d.getRoomNumber()
         );
@@ -29,7 +31,8 @@ public final class Mappers {
     public static PatientDtos.PatientResponse toPatientResponse(Patient p) {
         User u = p.getUser();
         return new PatientDtos.PatientResponse(
-            p.getId(), u.getId(), u.getUsername(), u.getFullName(), u.getEmail(), u.getPhone(),
+            p.getId(), u.getId(), u.getLogin(), u.getFullName(), u.getEmail(), u.getPhone(),
+            u.getAvatarUrl(),
             p.getBirthDate(), p.getAddress(), p.getInsuranceNumber(), u.isEnabled()
         );
     }
@@ -41,7 +44,8 @@ public final class Mappers {
             a.getId(),
             p.getId(), p.getUser().getFullName(),
             d.getId(), d.getUser().getFullName(), d.getSpecialization(),
-            a.getAppointmentDate(), a.getStatus(), a.getNotes(), a.getCreatedAt()
+            a.getAppointmentDate(), a.getStatus(), a.getNotes(),
+            a.getCalendarEventId(), a.getRescheduleCount(), a.getCreatedAt()
         );
     }
 

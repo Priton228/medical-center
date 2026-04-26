@@ -17,5 +17,12 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     List<Appointment> findByPatientIdAndAppointmentDateAfter(Long patientId, LocalDateTime after);
     List<Appointment> findByDoctorIdAndAppointmentDateAfter(Long doctorId, LocalDateTime after);
     Optional<Appointment> findByDoctorIdAndAppointmentDate(Long doctorId, LocalDateTime appointmentDate);
+    Optional<Appointment> findByConfirmToken(String token);
     long countByStatus(AppointmentStatus status);
+
+    List<Appointment> findByStatusInAndAppointmentDateBetweenAndReminderSentAtIsNull(
+        java.util.Collection<AppointmentStatus> statuses,
+        LocalDateTime from,
+        LocalDateTime to
+    );
 }

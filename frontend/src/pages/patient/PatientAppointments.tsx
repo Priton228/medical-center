@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { CalendarX } from 'lucide-react';
@@ -5,12 +6,15 @@ import PageHeader from '@/components/PageHeader';
 import Loader from '@/components/Loader';
 import EmptyState from '@/components/EmptyState';
 import StatusBadge from '@/components/StatusBadge';
+import RescheduleModal from '@/components/RescheduleModal';
 import { appointmentsApi } from '@/api/endpoints';
 import { formatDateTime } from '@/utils/format';
+import type { AppointmentResponse } from '@/types';
 
 export default function PatientAppointments() {
   const qc = useQueryClient();
   const { data, isLoading } = useQuery({ queryKey: ['p-appointments'], queryFn: () => appointmentsApi.listMine() });
+  const [reschedTarget, setReschedTarget] = useState<AppointmentResponse | null>(null);
 
   const cancel = async (id: number) => {
     try {
@@ -21,6 +25,11 @@ export default function PatientAppointments() {
     } catch (e: any) {
       toast.error(e?.response?.data?.message || 'Ошибка');
     }
+  };
+
+  const refresh = () => {
+    qc.invalidateQueries({ queryKey: ['p-appointments'] });
+    qc.invalidateQueries({ queryKey: ['p-upcoming'] });
   };
 
   return (
@@ -48,7 +57,10 @@ export default function PatientAppointments() {
                   <td className="py-2 pr-3"><StatusBadge status={a.status} /></td>
                   <td className="py-2 text-right">
                     {(a.status === 'PLANNED' || a.status === 'CONFIRMED') && (
-                      <button className="btn-ghost text-xs px-2 py-1" onClick={() => cancel(a.id)}>Отменить</button>
+                      <div className="flex justify-end gap-1">
+                        <button className="btn-ghost text-xs px-2 py-1" onClick={() => setReschedTarget(a)}>Перенести</button>
+                        <button className="btn-ghost text-xs px-2 py-1 text-rose-600" onClick={() => cancel(a.id)}>Отменить</button>
+                      </div>
                     )}
                   </td>
                 </tr>
@@ -56,6 +68,7 @@ export default function PatientAppointments() {
             </tbody>
           </table>
         </div>}
+      <RescheduleModal appointment={reschedTarget} onClose={() => setReschedTarget(null)} onDone={refresh} />
     </>
   );
 }

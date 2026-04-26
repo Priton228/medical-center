@@ -19,6 +19,12 @@ public class SymptomService {
     private final SymptomRepository symptomRepository;
 
     @Transactional(readOnly = true)
+    public SymptomDtos.SymptomResponse get(Long id) {
+        return symptomRepository.findById(id).map(Mappers::toSymptomResponse)
+            .orElseThrow(() -> new NotFoundException("Симптом не найден"));
+    }
+
+    @Transactional(readOnly = true)
     public List<SymptomDtos.SymptomResponse> listAll() {
         return symptomRepository.findAll().stream().map(Mappers::toSymptomResponse).toList();
     }

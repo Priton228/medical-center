@@ -8,11 +8,11 @@ import Loader from '@/components/Loader';
 import { doctorsApi } from '@/api/endpoints';
 
 interface FormState {
-  username: string; email: string; password: string; fullName: string;
+  login: string; email: string; password: string; fullName: string;
   phone: string; specialization: string; bio: string; roomNumber: string;
 }
 
-const empty: FormState = { username: '', email: '', password: '', fullName: '', phone: '', specialization: '', bio: '', roomNumber: '' };
+const empty: FormState = { login: '', email: '', password: '', fullName: '', phone: '', specialization: '', bio: '', roomNumber: '' };
 
 export default function AdminDoctors() {
   const qc = useQueryClient();
@@ -64,7 +64,7 @@ export default function AdminDoctors() {
               {data!.content.map((d) => (
                 <tr key={d.id} className="border-b last:border-0 hover:bg-brand-50/40">
                   <td className="py-2 pr-3 font-medium">{d.fullName}</td>
-                  <td className="py-2 pr-3 text-slate-500">{d.username}</td>
+                  <td className="py-2 pr-3 text-slate-500">{d.login}</td>
                   <td className="py-2 pr-3">{d.specialization}</td>
                   <td className="py-2 pr-3">{d.workStart?.slice(0, 5)}–{d.workEnd?.slice(0, 5)}</td>
                   <td className="py-2 pr-3">{d.roomNumber ?? '—'}</td>
@@ -85,7 +85,7 @@ export default function AdminDoctors() {
             <motion.div className="card w-full max-w-2xl" initial={{ scale: 0.95 }} animate={{ scale: 1 }} exit={{ scale: 0.95 }} onClick={(e) => e.stopPropagation()}>
               <h3 className="text-lg font-bold mb-3">Новый врач</h3>
               <div className="grid md:grid-cols-2 gap-3">
-                <div><label className="label">Логин</label><input className="input" value={form.username} onChange={(e) => setForm({ ...form, username: e.target.value })} /></div>
+                <div><label className="label">Логин</label><input className="input" value={form.login} onChange={(e) => setForm({ ...form, login: e.target.value })} /></div>
                 <div><label className="label">Email</label><input className="input" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} /></div>
                 <div><label className="label">Пароль</label><input className="input" type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} /></div>
                 <div><label className="label">ФИО</label><input className="input" value={form.fullName} onChange={(e) => setForm({ ...form, fullName: e.target.value })} /></div>

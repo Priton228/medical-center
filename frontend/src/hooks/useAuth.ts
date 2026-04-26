@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch, RootState } from '@/store';
-import { logout, setSession } from '@/store/slices/authSlice';
-import type { Role } from '@/types';
+import { logout, setSession, updateProfile } from '@/store/slices/authSlice';
+import type { AuthUser, Role } from '@/types';
 
 export function useAuth() {
   const auth = useSelector((s: RootState) => s.auth);
@@ -15,6 +15,7 @@ export function useAuth() {
     hasRole,
     primaryRole,
     setSession: (...args: Parameters<typeof setSession>) => dispatch(setSession(...args)),
+    updateProfile: (patch: Partial<AuthUser>) => dispatch(updateProfile(patch)),
     logout: () => dispatch(logout()),
   };
 }

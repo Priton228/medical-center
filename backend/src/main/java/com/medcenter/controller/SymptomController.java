@@ -24,6 +24,11 @@ public class SymptomController {
         return symptomService.listAll();
     }
 
+    @GetMapping("/{id}")
+    public SymptomDtos.SymptomResponse get(@PathVariable Long id) {
+        return symptomService.get(id);
+    }
+
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<SymptomDtos.SymptomResponse> create(@Valid @RequestBody SymptomDtos.SymptomRequest req) {
