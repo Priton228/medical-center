@@ -88,6 +88,70 @@ Frontend поднимется на `http://localhost:5173` и будет про�
 | Пациент       | `patient.sidorov` |
 | Пациент       | `patient.kozlova` |
 
+## Интеграции
+
+В проекте реализовано **две внешние интеграции** для уведомлений и календаря.
+
+### 1. Email-уведомления (Spring Mail / SMTP)
+
+- При создании записи пациент получает письмо с просьбой подтвердить приём
+  и кнопками **«Подтвердить»** / **«Отклонить»** (одноразовые токены).
+- За **24 часа** до приёма автоматически уходит напоминание (планировщик
+  `AppointmentReminderScheduler` срабатывает раз в 5 минут).
+- При отмене или переносе записи рассылается соответствующее уведомление,
+  старое напоминание помечается как отправленное и не дублируется.
+- Если SMTP не настроен (`MEDCENTER_SMTP_USERNAME` пуст) — сервис работает
+  в **dry-run** режиме: содержимое писем пишется в лог, никакие письма
+  не отправляются.
+
+### 2. Google Calendar (Google Calendar API)
+
+- При создании приёма создаётся событие в календаре врача (или общем
+  календаре) — id события сохраняется в `appointments.calendar_event_id`.
+- При **переносе** записи событие двигается на новое время.
+- При **отмене** или удалении приёма событие удаляется из календаря.
+- Если Google API не настроен (`MEDCENTER_GOOGLE_CALENDAR_ENABLED=false`),
+  каждое уведомление **прикрепляет файл `.ics`** к письму — пользователь
+  может добавить событие в любой календарь вручную.
+
+### Конфигурация
+
+```yaml
+medcenter:
+  notifications:
+    enabled: true
+    from-address: ${MEDCENTER_NOTIFICATIONS_FROM:noreply@medcenter.local}
+    reminder-hours-before: 24
+    public-frontend-url: ${MEDCENTER_PUBLIC_FRONTEND_URL:http://localhost:5173}
+    public-backend-url: ${MEDCENTER_PUBLIC_BACKEND_URL:http://localhost:8080}
+  google-calendar:
+    enabled: ${MEDCENTER_GOOGLE_CALENDAR_ENABLED:false}
+    service-account-json: ${GOOGLE_SERVICE_ACCOUNT_JSON:}
+    calendar-id: ${MEDCENTER_GOOGLE_CALENDAR_ID:primary}
+spring:
+  mail:
+    host: ${MEDCENTER_SMTP_HOST:smtp.gmail.com}
+    port: ${MEDCENTER_SMTP_PORT:587}
+    username: ${MEDCENTER_SMTP_USERNAME:}
+    password: ${MEDCENTER_SMTP_PASSWORD:}
+```
+
+## Авторизация
+
+Авторизация выполняется по **логину** (поле `users.login`). Email больше
+не используется как идентификатор: его можно менять в профиле без последствий
+для входа. Логин уникален, валидируется регулярным выражением
+`^[a-zA-Z0-9._-]{3,64}$`.
+
+## Аватары пользователей
+
+Все три роли могут загружать аватарку из проводника устройства:
+
+- `POST /api/v1/users/me/avatar` — multipart-загрузка (≤ 5 МБ; PNG/JPEG/WEBP/GIF).
+- `DELETE /api/v1/users/me/avatar` — сбросить аватар.
+- Файлы сохраняются в каталоге `medcenter.uploads.dir` и раздаются
+  по `/uploads/avatars/...`.
+
 ## Соответствие требованиям задания
 
 - Spring Boot 3+, Spring Security, Spring Data JPA, JWT, BCrypt — раздел 3.1.2.

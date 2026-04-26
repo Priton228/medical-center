@@ -7,7 +7,7 @@ import { useAuth } from '@/hooks/useAuth';
 import toast from 'react-hot-toast';
 
 export default function LoginPage() {
-  const [username, setUsername] = useState('');
+  const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
   const [busy, setBusy] = useState(false);
   const { setSession } = useAuth();
@@ -17,7 +17,7 @@ export default function LoginPage() {
     e.preventDefault();
     setBusy(true);
     try {
-      const res = await authApi.login(username, password);
+      const res = await authApi.login(login, password);
       setSession(res);
       toast.success(`Добро пожаловать, ${res.fullName}!`);
       navigate('/');
@@ -66,7 +66,7 @@ export default function LoginPage() {
           </div>
           <div>
             <label className="label">Логин</label>
-            <input className="input" value={username} onChange={(e) => setUsername(e.target.value)} required autoFocus />
+            <input className="input" value={login} onChange={(e) => setLogin(e.target.value)} required autoFocus autoComplete="username" />
           </div>
           <div>
             <label className="label">Пароль</label>

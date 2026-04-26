@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface DoctorRepository extends JpaRepository<Doctor, Long> {
     Optional<Doctor> findByUserId(Long userId);
-    Optional<Doctor> findByUserUsername(String username);
+    Optional<Doctor> findByUserLogin(String login);
     List<Doctor> findBySpecializationIgnoreCase(String specialization);
     Page<Doctor> findAllByAvailableTrue(Pageable pageable);
 }

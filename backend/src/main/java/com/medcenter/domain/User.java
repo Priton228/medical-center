@@ -19,8 +19,8 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true, length = 64)
-    private String username;
+    @Column(name = "login", nullable = false, unique = true, length = 64)
+    private String login;
 
     @Column(nullable = false, unique = true, length = 128)
     private String email;
@@ -33,6 +33,9 @@ public class User {
 
     @Column(length = 32)
     private String phone;
+
+    @Column(name = "avatar_url", length = 255)
+    private String avatarUrl;
 
     @Column(nullable = false)
     private boolean enabled = true;

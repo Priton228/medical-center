@@ -15,12 +15,14 @@ import DoctorDashboard from '@/pages/doctor/DoctorDashboard';
 import DoctorSchedule from '@/pages/doctor/DoctorSchedule';
 import DoctorAppointments from '@/pages/doctor/DoctorAppointments';
 import DoctorRecords from '@/pages/doctor/DoctorRecords';
+import DoctorProfile from '@/pages/doctor/DoctorProfile';
 import AdminDashboard from '@/pages/admin/AdminDashboard';
 import AdminUsers from '@/pages/admin/AdminUsers';
 import AdminDoctors from '@/pages/admin/AdminDoctors';
 import AdminPatients from '@/pages/admin/AdminPatients';
 import AdminSymptoms from '@/pages/admin/AdminSymptoms';
 import AdminDiagnoses from '@/pages/admin/AdminDiagnoses';
+import AdminProfile from '@/pages/admin/AdminProfile';
 import HomeRedirect from '@/pages/HomeRedirect';
 
 export default function App() {
@@ -44,6 +46,7 @@ export default function App() {
         <Route path="/doctor/schedule" element={<DoctorSchedule />} />
         <Route path="/doctor/appointments" element={<DoctorAppointments />} />
         <Route path="/doctor/records" element={<DoctorRecords />} />
+        <Route path="/doctor/profile" element={<DoctorProfile />} />
       </Route>
 
       <Route element={<RoleGuard role="ROLE_ADMIN"><AdminLayout /></RoleGuard>}>
@@ -53,6 +56,7 @@ export default function App() {
         <Route path="/admin/patients" element={<AdminPatients />} />
         <Route path="/admin/symptoms" element={<AdminSymptoms />} />
         <Route path="/admin/diagnoses" element={<AdminDiagnoses />} />
+        <Route path="/admin/profile" element={<AdminProfile />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />

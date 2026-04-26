@@ -3,10 +3,13 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import PageHeader from '@/components/PageHeader';
 import Loader from '@/components/Loader';
+import AvatarUploader from '@/components/AvatarUploader';
 import { patientsApi, usersApi } from '@/api/endpoints';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function PatientProfile() {
   const qc = useQueryClient();
+  const { user } = useAuth();
   const { data, isLoading } = useQuery({ queryKey: ['p-me'], queryFn: () => patientsApi.me() });
   const [form, setForm] = useState({ email: '', fullName: '', phone: '', birthDate: '', address: '', insuranceNumber: '' });
 
@@ -39,7 +42,13 @@ export default function PatientProfile() {
     <>
       <PageHeader title="Профиль" subtitle="Контактные данные и информация о пациенте." />
       {isLoading || !data ? <Loader /> : (
-        <form onSubmit={submit} className="card grid md:grid-cols-2 gap-3 max-w-3xl">
+        <div className="space-y-4 max-w-3xl">
+          <div className="card">
+            <h3 className="text-base font-semibold text-slate-700 mb-4">Аватар</h3>
+            <AvatarUploader avatarUrl={user?.avatarUrl ?? data.avatarUrl} fullName={data.fullName}
+              onChanged={() => qc.invalidateQueries({ queryKey: ['p-me'] })} />
+          </div>
+        <form onSubmit={submit} className="card grid md:grid-cols-2 gap-3">
           <div><label className="label">ФИО</label><input className="input" value={form.fullName} onChange={(e) => setForm({ ...form, fullName: e.target.value })} /></div>
           <div><label className="label">Email</label><input className="input" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} /></div>
           <div><label className="label">Телефон</label><input className="input" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} /></div>
@@ -50,6 +59,7 @@ export default function PatientProfile() {
             <button className="btn-primary">Сохранить</button>
           </div>
         </form>
+        </div>
       )}
     </>
   );

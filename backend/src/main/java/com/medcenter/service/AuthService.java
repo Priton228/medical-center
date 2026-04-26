@@ -35,8 +35,8 @@ public class AuthService {
 
     @Transactional
     public AuthDtos.JwtResponse register(AuthDtos.RegisterRequest req) {
-        if (userRepository.existsByUsername(req.username())) {
-            throw new ConflictException("Пользователь с таким именем уже существует");
+        if (userRepository.existsByLogin(req.login())) {
+            throw new ConflictException("Пользователь с таким логином уже существует");
         }
         if (userRepository.existsByEmail(req.email())) {
             throw new ConflictException("Пользователь с таким email уже существует");
@@ -49,7 +49,7 @@ public class AuthService {
             .orElseThrow(() -> new NotFoundException("Роль не найдена"));
 
         User user = User.builder()
-            .username(req.username())
+            .login(req.login())
             .email(req.email())
             .password(passwordEncoder.encode(req.password()))
             .fullName(req.fullName())
@@ -84,9 +84,9 @@ public class AuthService {
 
     public AuthDtos.JwtResponse login(AuthDtos.LoginRequest req) {
         Authentication auth = authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(req.username(), req.password())
+            new UsernamePasswordAuthenticationToken(req.login(), req.password())
         );
-        User user = userRepository.findByUsername(auth.getName())
+        User user = userRepository.findByLogin(auth.getName())
             .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
         return buildJwtResponse(user);
     }
@@ -98,7 +98,12 @@ public class AuthService {
         Map<String, Object> claims = new HashMap<>();
         claims.put("uid", user.getId());
         claims.put("roles", roles);
-        String token = jwtService.generateToken(user.getUsername(), claims);
-        return new AuthDtos.JwtResponse(token, "Bearer", user.getId(), user.getUsername(), user.getFullName(), roles);
+        String token = jwtService.generateToken(user.getLogin(), claims);
+        return new AuthDtos.JwtResponse(
+            token, "Bearer",
+            user.getId(), user.getLogin(), user.getFullName(),
+            user.getAvatarUrl(),
+            roles
+        );
     }
 }

@@ -6,11 +6,11 @@ import type {
 } from '@/types';
 
 export const authApi = {
-  login: (username: string, password: string) =>
-    api.post<JwtResponse>('/api/v1/auth/login', { username, password }).then((r) => r.data),
+  login: (login: string, password: string) =>
+    api.post<JwtResponse>('/api/v1/auth/login', { login, password }).then((r) => r.data),
   register: (payload: any) =>
     api.post<JwtResponse>('/api/v1/auth/register', payload).then((r) => r.data),
-  me: () => api.get<UserResponse>('/api/v1/auth/me').then((r) => r.data),
+  me: () => api.get<UserResponse>('/api/v1/users/me').then((r) => r.data),
 };
 
 export const usersApi = {
@@ -20,6 +20,17 @@ export const usersApi = {
     api.patch<UserResponse>(`/api/v1/users/${id}/enabled`, { enabled }).then((r) => r.data),
   updateMe: (data: { email: string; fullName: string; phone?: string }) =>
     api.put<UserResponse>('/api/v1/users/me', data).then((r) => r.data),
+  uploadAvatar: (file: File) => {
+    const fd = new FormData();
+    fd.append('file', file);
+    return api.post<UserResponse>('/api/v1/users/me/avatar', fd, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }).then((r) => r.data);
+  },
+  removeAvatar: () =>
+    api.delete<UserResponse>('/api/v1/users/me/avatar').then((r) => r.data),
+  changePassword: (oldPassword: string, newPassword: string) =>
+    api.post('/api/v1/users/me/password', { oldPassword, newPassword }).then((r) => r.data),
 };
 
 export const doctorsApi = {
@@ -37,6 +48,8 @@ export const doctorsApi = {
   create: (data: any) => api.post<DoctorResponse>('/api/v1/doctors', data).then((r) => r.data),
   update: (id: number, data: any) => api.put<DoctorResponse>(`/api/v1/doctors/${id}`, data).then((r) => r.data),
   delete: (id: number) => api.delete(`/api/v1/doctors/${id}`).then((r) => r.data),
+  updateOwnProfile: (data: { bio?: string; photoUrl?: string; roomNumber?: string }) =>
+    api.patch<DoctorResponse>('/api/v1/doctors/me', data).then((r) => r.data),
 };
 
 export const patientsApi = {
@@ -48,6 +61,7 @@ export const patientsApi = {
   create: (data: any) => api.post<PatientResponse>('/api/v1/patients', data).then((r) => r.data),
   update: (id: number, data: any) => api.put<PatientResponse>(`/api/v1/patients/${id}`, data).then((r) => r.data),
   get: (id: number) => api.get<PatientResponse>(`/api/v1/patients/${id}`).then((r) => r.data),
+  delete: (id: number) => api.delete(`/api/v1/patients/${id}`).then((r) => r.data),
 };
 
 export const appointmentsApi = {
@@ -60,6 +74,8 @@ export const appointmentsApi = {
   upcoming: () => api.get<AppointmentResponse[]>('/api/v1/appointments/me/upcoming').then((r) => r.data),
   setStatus: (id: number, status: AppointmentStatus) =>
     api.patch<AppointmentResponse>(`/api/v1/appointments/${id}/status`, { status }).then((r) => r.data),
+  reschedule: (id: number, data: { appointmentDate: string; notes?: string }) =>
+    api.patch<AppointmentResponse>(`/api/v1/appointments/${id}/reschedule`, data).then((r) => r.data),
 };
 
 export const symptomsApi = {

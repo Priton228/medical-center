@@ -23,13 +23,13 @@ public class MedicalRecordController {
     @GetMapping("/me")
     @PreAuthorize("hasRole('PATIENT')")
     public List<MedicalRecordDtos.MedicalRecordResponse> mine() {
-        return service.forCurrentPatient(currentUser.current().getUsername());
+        return service.forCurrentPatient(currentUser.current().getLogin());
     }
 
     @GetMapping("/by-doctor")
     @PreAuthorize("hasRole('DOCTOR')")
     public List<MedicalRecordDtos.MedicalRecordResponse> byDoctor() {
-        return service.byDoctor(currentUser.current().getUsername());
+        return service.byDoctor(currentUser.current().getLogin());
     }
 
     @GetMapping("/patient/{id}")
@@ -42,6 +42,6 @@ public class MedicalRecordController {
     @PreAuthorize("hasRole('DOCTOR')")
     public ResponseEntity<MedicalRecordDtos.MedicalRecordResponse> create(@Valid @RequestBody MedicalRecordDtos.MedicalRecordRequest req) {
         return ResponseEntity.status(HttpStatus.CREATED)
-            .body(service.createByDoctor(currentUser.current().getUsername(), req));
+            .body(service.createByDoctor(currentUser.current().getLogin(), req));
     }
 }

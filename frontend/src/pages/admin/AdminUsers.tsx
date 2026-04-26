@@ -40,7 +40,7 @@ export default function AdminUsers() {
               {data!.content.map((u) => (
                 <tr key={u.id} className="border-b last:border-0 hover:bg-brand-50/40">
                   <td className="py-2 pr-3">{u.id}</td>
-                  <td className="py-2 pr-3 font-medium">{u.username}</td>
+                  <td className="py-2 pr-3 font-medium">{u.login}</td>
                   <td className="py-2 pr-3">{u.fullName}</td>
                   <td className="py-2 pr-3 text-slate-500">{u.email}</td>
                   <td className="py-2 pr-3">{u.roles.map(roleLabel).join(', ')}</td>

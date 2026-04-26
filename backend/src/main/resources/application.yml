@@ -24,6 +24,26 @@ spring:
     enabled: true
     baseline-on-migrate: true
     locations: classpath:db/migration
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
+  mail:
+    host: ${MEDCENTER_SMTP_HOST:smtp.gmail.com}
+    port: ${MEDCENTER_SMTP_PORT:587}
+    username: ${MEDCENTER_SMTP_USERNAME:}
+    password: ${MEDCENTER_SMTP_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+  thymeleaf:
+    cache: false
 
 medcenter:
   jwt:
@@ -31,7 +51,32 @@ medcenter:
     access-token-validity-minutes: 60
     refresh-token-validity-days: 7
   cors:
-    allowed-origins: http://localhost:5173,http://localhost:3000
+    allowed-origins: ${MEDCENTER_CORS_ORIGINS:http://localhost:5173,http://localhost:3000}
+  uploads:
+    # Каталог, в который сохраняются загруженные пользователями файлы (аватары и т.п.).
+    # По умолчанию — `./uploads` относительно рабочего каталога backend-сервиса.
+    dir: ${MEDCENTER_UPLOADS_DIR:./uploads}
+    public-base-url: ${MEDCENTER_PUBLIC_BASE_URL:http://localhost:8080}
+  notifications:
+    enabled: ${MEDCENTER_NOTIFICATIONS_ENABLED:true}
+    # Адрес "от кого" в исходящих письмах.
+    from-address: ${MEDCENTER_NOTIFICATIONS_FROM:no-reply@medical-center.local}
+    from-name: ${MEDCENTER_NOTIFICATIONS_FROM_NAME:МедЦентр}
+    # Базовый URL фронтенда для ссылок в письмах
+    public-frontend-url: ${MEDCENTER_PUBLIC_FRONTEND_URL:http://localhost:5173}
+    # Публичный URL backend-API (для ссылок «Подтвердить»/«Отменить» в письмах).
+    # Должен быть доступен снаружи; обычно отличается от public-base-url для аплоадов.
+    public-backend-url: ${MEDCENTER_PUBLIC_BACKEND_URL:http://localhost:8080}
+    # За сколько часов до приёма отправлять напоминание (по умолчанию 24)
+    reminder-hours-before: ${MEDCENTER_REMINDER_HOURS_BEFORE:24}
+  google-calendar:
+    enabled: ${MEDCENTER_GOOGLE_CALENDAR_ENABLED:false}
+    calendar-id: ${MEDCENTER_GOOGLE_CALENDAR_ID:primary}
+    application-name: ${MEDCENTER_GOOGLE_APP_NAME:MedicalCenter}
+    # Содержимое JSON-файла service account (см. docs/INTEGRATIONS.md)
+    service-account-json: ${MEDCENTER_GOOGLE_SERVICE_ACCOUNT_JSON:}
+    # Ниже — опциональные параметры impersonation
+    impersonate-email: ${MEDCENTER_GOOGLE_IMPERSONATE_EMAIL:}
 
 springdoc:
   api-docs:

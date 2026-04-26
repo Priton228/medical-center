@@ -23,9 +23,14 @@ const slice = createSlice({
   initialState: readInitial(),
   reducers: {
     setSession(state, action: PayloadAction<JwtResponse>) {
-      const { accessToken, userId, username, fullName, roles } = action.payload;
+      const { accessToken, userId, login, fullName, avatarUrl, roles } = action.payload;
       state.token = accessToken;
-      state.user = { userId, username, fullName, roles };
+      state.user = { userId, login, fullName, avatarUrl: avatarUrl ?? null, roles };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    },
+    updateProfile(state, action: PayloadAction<Partial<AuthUser>>) {
+      if (!state.user) return;
+      state.user = { ...state.user, ...action.payload };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     },
     logout(state) {
@@ -36,5 +41,5 @@ const slice = createSlice({
   },
 });
 
-export const { setSession, logout } = slice.actions;
+export const { setSession, updateProfile, logout } = slice.actions;
 export default slice.reducer;

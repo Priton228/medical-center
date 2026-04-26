@@ -2,8 +2,9 @@ export type Role = 'ROLE_PATIENT' | 'ROLE_DOCTOR' | 'ROLE_ADMIN';
 
 export interface AuthUser {
   userId: number;
-  username: string;
+  login: string;
   fullName: string;
+  avatarUrl?: string | null;
   roles: Role[];
 }
 
@@ -14,10 +15,11 @@ export interface JwtResponse extends AuthUser {
 
 export interface UserResponse {
   id: number;
-  username: string;
+  login: string;
   email: string;
   fullName: string;
   phone?: string | null;
+  avatarUrl?: string | null;
   enabled: boolean;
   roles: Role[];
   createdAt: string;
@@ -26,10 +28,11 @@ export interface UserResponse {
 export interface DoctorResponse {
   id: number;
   userId: number;
-  username: string;
+  login: string;
   fullName: string;
   email: string;
   phone?: string | null;
+  avatarUrl?: string | null;
   specialization: string;
   bio?: string | null;
   photoUrl?: string | null;
@@ -42,10 +45,11 @@ export interface DoctorResponse {
 export interface PatientResponse {
   id: number;
   userId: number;
-  username: string;
+  login: string;
   fullName: string;
   email: string;
   phone?: string | null;
+  avatarUrl?: string | null;
   birthDate?: string | null;
   address?: string | null;
   insuranceNumber?: string | null;
@@ -64,6 +68,8 @@ export interface AppointmentResponse {
   appointmentDate: string;
   status: AppointmentStatus;
   notes?: string | null;
+  calendarEventId?: string | null;
+  rescheduleCount: number;
   createdAt: string;
 }
 

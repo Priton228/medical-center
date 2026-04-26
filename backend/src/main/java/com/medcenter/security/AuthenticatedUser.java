@@ -19,8 +19,8 @@ public class AuthenticatedUser {
         if (auth == null || !auth.isAuthenticated()) {
             throw new ForbiddenException("Не аутентифицирован");
         }
-        String username = auth.getName();
-        return userRepository.findByUsername(username)
-            .orElseThrow(() -> new ForbiddenException("Пользователь не найден: " + username));
+        String login = auth.getName();
+        return userRepository.findByLogin(login)
+            .orElseThrow(() -> new ForbiddenException("Пользователь не найден: " + login));
     }
 }

@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { LogOut } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { roleLabel } from '@/utils/format';
+import UserAvatar from '@/components/UserAvatar';
 import clsx from 'clsx';
 
 export interface NavItem {
@@ -59,8 +60,13 @@ export default function SidebarLayout({ items, title, accent }: Props) {
         </nav>
 
         <div className="px-4 py-4 border-t border-white/15 text-sm">
-          <div className="font-semibold truncate">{user?.fullName}</div>
-          <div className="text-brand-100/80 text-xs">{primaryRole && roleLabel(primaryRole)}</div>
+          <div className="flex items-center gap-3">
+            <UserAvatar fullName={user?.fullName} avatarUrl={user?.avatarUrl} size={40} />
+            <div className="min-w-0">
+              <div className="font-semibold truncate">{user?.fullName}</div>
+              <div className="text-brand-100/80 text-xs">{primaryRole && roleLabel(primaryRole)}</div>
+            </div>
+          </div>
           <button
             type="button"
             className="mt-3 w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-white/15 hover:bg-white/25 transition"

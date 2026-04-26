@@ -35,14 +35,14 @@ public class MedicalRecordService {
 
     @Transactional(readOnly = true)
     public List<MedicalRecordDtos.MedicalRecordResponse> forCurrentPatient(String username) {
-        Patient p = patientRepository.findByUserUsername(username)
+        Patient p = patientRepository.findByUserLogin(username)
             .orElseThrow(() -> new NotFoundException("Профиль пациента не найден"));
         return forPatient(p.getId());
     }
 
     @Transactional(readOnly = true)
     public List<MedicalRecordDtos.MedicalRecordResponse> byDoctor(String username) {
-        Doctor d = doctorRepository.findByUserUsername(username)
+        Doctor d = doctorRepository.findByUserLogin(username)
             .orElseThrow(() -> new NotFoundException("Профиль врача не найден"));
         return repository.findByDoctorIdOrderByCreatedAtDesc(d.getId()).stream()
             .map(Mappers::toMedicalRecordResponse).toList();
@@ -50,7 +50,7 @@ public class MedicalRecordService {
 
     @Transactional
     public MedicalRecordDtos.MedicalRecordResponse createByDoctor(String doctorUsername, MedicalRecordDtos.MedicalRecordRequest req) {
-        Doctor doctor = doctorRepository.findByUserUsername(doctorUsername)
+        Doctor doctor = doctorRepository.findByUserLogin(doctorUsername)
             .orElseThrow(() -> new NotFoundException("Профиль врача не найден"));
 
         Long patientId = req.patientId();

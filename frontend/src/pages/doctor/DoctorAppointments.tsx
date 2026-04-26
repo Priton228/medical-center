@@ -7,8 +7,9 @@ import EmptyState from '@/components/EmptyState';
 import StatusBadge from '@/components/StatusBadge';
 import { appointmentsApi, recordsApi } from '@/api/endpoints';
 import { formatDateTime } from '@/utils/format';
-import type { AppointmentStatus } from '@/types';
+import type { AppointmentResponse, AppointmentStatus } from '@/types';
 import { useState } from 'react';
+import RescheduleModal from '@/components/RescheduleModal';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function DoctorAppointments() {
@@ -19,6 +20,7 @@ export default function DoctorAppointments() {
   const [treatment, setTreatment] = useState('');
   const [notes, setNotes] = useState('');
   const [busy, setBusy] = useState(false);
+  const [reschedTarget, setReschedTarget] = useState<AppointmentResponse | null>(null);
 
   const setStatus = async (id: number, status: AppointmentStatus) => {
     try {
@@ -75,7 +77,8 @@ export default function DoctorAppointments() {
                     {a.status === 'PLANNED' && <button className="btn-ghost text-xs px-2 py-1" onClick={() => setStatus(a.id, 'CONFIRMED')}>Подтвердить</button>}
                     {(a.status === 'PLANNED' || a.status === 'CONFIRMED') && <>
                       <button className="btn-primary text-xs px-2 py-1" onClick={() => setRecordFor({ apptId: a.id, patientName: a.patientFullName })}>Завершить</button>
-                      <button className="btn-ghost text-xs px-2 py-1" onClick={() => setStatus(a.id, 'CANCELLED')}>Отменить</button>
+                      <button className="btn-ghost text-xs px-2 py-1" onClick={() => setReschedTarget(a)}>Перенести</button>
+                      <button className="btn-ghost text-xs px-2 py-1 text-rose-600" onClick={() => setStatus(a.id, 'CANCELLED')}>Отменить</button>
                     </>}
                   </td>
                 </tr>
@@ -83,6 +86,9 @@ export default function DoctorAppointments() {
             </tbody>
           </table>
         </div>}
+
+      <RescheduleModal appointment={reschedTarget} onClose={() => setReschedTarget(null)}
+        onDone={() => { qc.invalidateQueries({ queryKey: ['d-appointments'] }); qc.invalidateQueries({ queryKey: ['d-upcoming'] }); }} />
 
       <AnimatePresence>
         {recordFor && (

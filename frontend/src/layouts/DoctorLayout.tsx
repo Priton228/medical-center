@@ -1,5 +1,5 @@
 import SidebarLayout from '@/components/SidebarLayout';
-import { CalendarRange, ClipboardList, Home, NotebookText } from 'lucide-react';
+import { CalendarRange, ClipboardList, Home, NotebookText, UserCircle2 } from 'lucide-react';
 
 export default function DoctorLayout() {
   return (
@@ -11,6 +11,7 @@ export default function DoctorLayout() {
         { to: '/doctor/schedule', label: 'Расписание', icon: <CalendarRange size={18} /> },
         { to: '/doctor/appointments', label: 'Записи на приём', icon: <ClipboardList size={18} /> },
         { to: '/doctor/records', label: 'Медкарты', icon: <NotebookText size={18} /> },
+        { to: '/doctor/profile', label: 'Профиль', icon: <UserCircle2 size={18} /> },
       ]}
     />
   );

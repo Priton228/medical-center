@@ -2,6 +2,8 @@ package com.medcenter.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 import java.time.LocalTime;
 
@@ -10,10 +12,11 @@ public class DoctorDtos {
     public record DoctorResponse(
         Long id,
         Long userId,
-        String username,
+        String login,
         String fullName,
         String email,
         String phone,
+        String avatarUrl,
         String specialization,
         String bio,
         String photoUrl,
@@ -24,7 +27,8 @@ public class DoctorDtos {
     ) {}
 
     public record CreateDoctorRequest(
-        @NotBlank String username,
+        @NotBlank @Size(min = 3, max = 64)
+        @Pattern(regexp = "^[a-zA-Z0-9._-]+$") String login,
         @NotBlank String email,
         @NotBlank String password,
         @NotBlank String fullName,
@@ -48,5 +52,12 @@ public class DoctorDtos {
         @NotNull LocalTime workStart,
         @NotNull LocalTime workEnd,
         @NotNull Boolean available
+    ) {}
+
+    /** Самостоятельное обновление профиля врача (биография, кабинет, фото). */
+    public record UpdateOwnProfileRequest(
+        String bio,
+        String photoUrl,
+        String roomNumber
     ) {}
 }

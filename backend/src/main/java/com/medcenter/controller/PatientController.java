@@ -35,13 +35,13 @@ public class PatientController {
     @GetMapping("/me")
     @PreAuthorize("hasRole('PATIENT')")
     public PatientDtos.PatientResponse me() {
-        return patientService.getByUsername(currentUser.current().getUsername());
+        return patientService.getByUsername(currentUser.current().getLogin());
     }
 
     @PutMapping("/me")
     @PreAuthorize("hasRole('PATIENT')")
     public PatientDtos.PatientResponse updateMe(@Valid @RequestBody PatientDtos.UpdatePatientRequest req) {
-        return patientService.updateOwn(currentUser.current().getUsername(), req);
+        return patientService.updateOwn(currentUser.current().getLogin(), req);
     }
 
     @PostMapping
@@ -54,5 +54,12 @@ public class PatientController {
     @PreAuthorize("hasRole('ADMIN')")
     public PatientDtos.PatientResponse update(@PathVariable Long id, @Valid @RequestBody PatientDtos.UpdatePatientRequest req) {
         return patientService.update(id, req);
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        patientService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

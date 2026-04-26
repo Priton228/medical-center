@@ -48,18 +48,18 @@ public class DoctorService {
 
     @Transactional(readOnly = true)
     public DoctorDtos.DoctorResponse getByUsername(String username) {
-        return doctorRepository.findByUserUsername(username).map(Mappers::toDoctorResponse)
+        return doctorRepository.findByUserLogin(username).map(Mappers::toDoctorResponse)
             .orElseThrow(() -> new NotFoundException("Профиль врача не найден"));
     }
 
     @Transactional
     public DoctorDtos.DoctorResponse create(DoctorDtos.CreateDoctorRequest req) {
-        if (userRepository.existsByUsername(req.username())) throw new ConflictException("Имя пользователя занято");
+        if (userRepository.existsByLogin(req.login())) throw new ConflictException("Логин занят");
         if (userRepository.existsByEmail(req.email())) throw new ConflictException("Email занят");
         Role role = roleRepository.findByName(RoleName.ROLE_DOCTOR)
             .orElseThrow(() -> new NotFoundException("Роль врача не найдена"));
         User user = User.builder()
-            .username(req.username())
+            .login(req.login())
             .email(req.email())
             .password(passwordEncoder.encode(req.password()))
             .fullName(req.fullName())
@@ -94,11 +94,22 @@ public class DoctorService {
 
     @Transactional
     public DoctorDtos.DoctorResponse updateOwnSchedule(String username, DoctorDtos.UpdateScheduleRequest req) {
-        Doctor d = doctorRepository.findByUserUsername(username)
+        Doctor d = doctorRepository.findByUserLogin(username)
             .orElseThrow(() -> new NotFoundException("Профиль врача не найден"));
         d.setWorkStart(req.workStart());
         d.setWorkEnd(req.workEnd());
         d.setAvailable(Boolean.TRUE.equals(req.available()));
+        return Mappers.toDoctorResponse(doctorRepository.save(d));
+    }
+
+    /** Самостоятельное обновление профиля (биография, кабинет, фото). */
+    @Transactional
+    public DoctorDtos.DoctorResponse updateOwnProfile(String login, DoctorDtos.UpdateOwnProfileRequest req) {
+        Doctor d = doctorRepository.findByUserLogin(login)
+            .orElseThrow(() -> new NotFoundException("Профиль врача не найден"));
+        if (req.bio() != null) d.setBio(req.bio());
+        if (req.photoUrl() != null) d.setPhotoUrl(req.photoUrl());
+        if (req.roomNumber() != null) d.setRoomNumber(req.roomNumber());
         return Mappers.toDoctorResponse(doctorRepository.save(d));
     }
 

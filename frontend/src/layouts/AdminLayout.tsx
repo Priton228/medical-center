@@ -1,5 +1,5 @@
 import SidebarLayout from '@/components/SidebarLayout';
-import { Activity, BookOpenCheck, Home, Stethoscope, UserCog, Users } from 'lucide-react';
+import { Activity, BookOpenCheck, Home, Stethoscope, UserCircle2, UserCog, Users } from 'lucide-react';
 
 export default function AdminLayout() {
   return (
@@ -13,6 +13,7 @@ export default function AdminLayout() {
         { to: '/admin/patients', label: 'Пациенты', icon: <Users size={18} /> },
         { to: '/admin/symptoms', label: 'Симптомы', icon: <Activity size={18} /> },
         { to: '/admin/diagnoses', label: 'Диагнозы', icon: <BookOpenCheck size={18} /> },
+        { to: '/admin/profile', label: 'Профиль', icon: <UserCircle2 size={18} /> },
       ]}
     />
   );
