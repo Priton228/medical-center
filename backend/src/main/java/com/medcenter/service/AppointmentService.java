@@ -113,6 +113,17 @@ public class AppointmentService {
             throw new ForbiddenException("Пациент может только отменить запись");
         }
         AppointmentStatus old = a.getStatus();
+        // При возврате из CANCELLED в активный статус слот может быть уже занят
+        // другой записью — нужно проверить вручную, чтобы вернуть осмысленный 409,
+        // а не 500 от частичного индекса uq_doctor_slot_active.
+        if (old == AppointmentStatus.CANCELLED && newStatus != AppointmentStatus.CANCELLED) {
+            Long currentId = a.getId();
+            appointmentRepository
+                .findByDoctorIdAndAppointmentDateAndStatusNot(
+                    a.getDoctor().getId(), a.getAppointmentDate(), AppointmentStatus.CANCELLED)
+                .filter(other -> !other.getId().equals(currentId))
+                .ifPresent(other -> { throw new ConflictException("Слот уже занят другой активной записью"); });
+        }
         a.setStatus(newStatus);
         a = appointmentRepository.save(a);
 
