@@ -17,6 +17,14 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     List<Appointment> findByPatientIdAndAppointmentDateAfter(Long patientId, LocalDateTime after);
     List<Appointment> findByDoctorIdAndAppointmentDateAfter(Long doctorId, LocalDateTime after);
     Optional<Appointment> findByDoctorIdAndAppointmentDate(Long doctorId, LocalDateTime appointmentDate);
+
+    /**
+     * Поиск активного (не отменённого) приёма по слоту.
+     * Гарантированно возвращает не более одной записи благодаря частичному
+     * уникальному индексу {@code uq_doctor_slot_active} (см. миграцию V4).
+     */
+    Optional<Appointment> findByDoctorIdAndAppointmentDateAndStatusNot(
+        Long doctorId, LocalDateTime appointmentDate, AppointmentStatus status);
     Optional<Appointment> findByConfirmToken(String token);
     long countByStatus(AppointmentStatus status);
 

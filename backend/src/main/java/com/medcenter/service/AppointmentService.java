@@ -45,8 +45,12 @@ public class AppointmentService {
         if (req.appointmentDate().isBefore(LocalDateTime.now())) {
             throw new BadRequestException("Дата приёма должна быть в будущем");
         }
-        appointmentRepository.findByDoctorIdAndAppointmentDate(doctor.getId(), req.appointmentDate())
-            .filter(a -> a.getStatus() != AppointmentStatus.CANCELLED)
+        // Используем status-фильтрующий запрос: после миграции V4 для одного слота
+        // могут существовать несколько CANCELLED-строк, поэтому findBy...AppointmentDate
+        // (Optional) сломался бы IncorrectResultSizeDataAccessException.
+        appointmentRepository
+            .findByDoctorIdAndAppointmentDateAndStatusNot(
+                doctor.getId(), req.appointmentDate(), AppointmentStatus.CANCELLED)
             .ifPresent(a -> { throw new ConflictException("Слот уже занят"); });
         Appointment a = Appointment.builder()
             .patient(patient)
@@ -141,9 +145,11 @@ public class AppointmentService {
             throw new BadRequestException("Новая дата должна быть в будущем");
         }
         Long currentId = a.getId();
-        appointmentRepository.findByDoctorIdAndAppointmentDate(a.getDoctor().getId(), req.appointmentDate())
+        // findBy...AndStatusNot вернёт максимум одну запись (см. uq_doctor_slot_active).
+        appointmentRepository
+            .findByDoctorIdAndAppointmentDateAndStatusNot(
+                a.getDoctor().getId(), req.appointmentDate(), AppointmentStatus.CANCELLED)
             .filter(other -> !other.getId().equals(currentId))
-            .filter(other -> other.getStatus() != AppointmentStatus.CANCELLED)
             .ifPresent(other -> { throw new ConflictException("Слот уже занят"); });
 
         a.setAppointmentDate(req.appointmentDate());
