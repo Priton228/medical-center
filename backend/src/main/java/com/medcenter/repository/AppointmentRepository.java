@@ -16,7 +16,18 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     List<Appointment> findByDoctorIdAndAppointmentDateBetween(Long doctorId, LocalDateTime from, LocalDateTime to);
     List<Appointment> findByPatientIdAndAppointmentDateAfter(Long patientId, LocalDateTime after);
     List<Appointment> findByDoctorIdAndAppointmentDateAfter(Long doctorId, LocalDateTime after);
-    Optional<Appointment> findByDoctorIdAndAppointmentDate(Long doctorId, LocalDateTime appointmentDate);
+    /**
+     * Поиск активного (не отменённого) приёма по слоту.
+     * Гарантированно возвращает не более одной записи благодаря частичному
+     * уникальному индексу {@code uq_doctor_slot_active} (см. миграцию V4).
+     *
+     * <p>Безусловный аналог без status-фильтра убран намеренно: после V4
+     * на одном слоте может существовать несколько строк в статусе
+     * {@code CANCELLED}, и {@code Optional} такой запрос ломал бы
+     * {@code IncorrectResultSizeDataAccessException}.</p>
+     */
+    Optional<Appointment> findByDoctorIdAndAppointmentDateAndStatusNot(
+        Long doctorId, LocalDateTime appointmentDate, AppointmentStatus status);
     Optional<Appointment> findByConfirmToken(String token);
     long countByStatus(AppointmentStatus status);
 

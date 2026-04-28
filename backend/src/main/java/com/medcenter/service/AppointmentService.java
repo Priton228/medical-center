@@ -45,8 +45,12 @@ public class AppointmentService {
         if (req.appointmentDate().isBefore(LocalDateTime.now())) {
             throw new BadRequestException("Дата приёма должна быть в будущем");
         }
-        appointmentRepository.findByDoctorIdAndAppointmentDate(doctor.getId(), req.appointmentDate())
-            .filter(a -> a.getStatus() != AppointmentStatus.CANCELLED)
+        // Используем status-фильтрующий запрос: после миграции V4 для одного слота
+        // могут существовать несколько CANCELLED-строк, поэтому findBy...AppointmentDate
+        // (Optional) сломался бы IncorrectResultSizeDataAccessException.
+        appointmentRepository
+            .findByDoctorIdAndAppointmentDateAndStatusNot(
+                doctor.getId(), req.appointmentDate(), AppointmentStatus.CANCELLED)
             .ifPresent(a -> { throw new ConflictException("Слот уже занят"); });
         Appointment a = Appointment.builder()
             .patient(patient)
@@ -109,6 +113,17 @@ public class AppointmentService {
             throw new ForbiddenException("Пациент может только отменить запись");
         }
         AppointmentStatus old = a.getStatus();
+        // При возврате из CANCELLED в активный статус слот может быть уже занят
+        // другой записью — нужно проверить вручную, чтобы вернуть осмысленный 409,
+        // а не 500 от частичного индекса uq_doctor_slot_active.
+        if (old == AppointmentStatus.CANCELLED && newStatus != AppointmentStatus.CANCELLED) {
+            Long currentId = a.getId();
+            appointmentRepository
+                .findByDoctorIdAndAppointmentDateAndStatusNot(
+                    a.getDoctor().getId(), a.getAppointmentDate(), AppointmentStatus.CANCELLED)
+                .filter(other -> !other.getId().equals(currentId))
+                .ifPresent(other -> { throw new ConflictException("Слот уже занят другой активной записью"); });
+        }
         a.setStatus(newStatus);
         a = appointmentRepository.save(a);
 
@@ -141,9 +156,11 @@ public class AppointmentService {
             throw new BadRequestException("Новая дата должна быть в будущем");
         }
         Long currentId = a.getId();
-        appointmentRepository.findByDoctorIdAndAppointmentDate(a.getDoctor().getId(), req.appointmentDate())
+        // findBy...AndStatusNot вернёт максимум одну запись (см. uq_doctor_slot_active).
+        appointmentRepository
+            .findByDoctorIdAndAppointmentDateAndStatusNot(
+                a.getDoctor().getId(), req.appointmentDate(), AppointmentStatus.CANCELLED)
             .filter(other -> !other.getId().equals(currentId))
-            .filter(other -> other.getStatus() != AppointmentStatus.CANCELLED)
             .ifPresent(other -> { throw new ConflictException("Слот уже занят"); });
 
         a.setAppointmentDate(req.appointmentDate());

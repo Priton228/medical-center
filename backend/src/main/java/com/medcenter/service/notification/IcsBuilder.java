@@ -36,7 +36,7 @@ public final class IcsBuilder {
                                String method) {
         String startUtc = start.atOffset(ZoneOffset.UTC).format(UTC_FORMAT);
         String endUtc   = end.atOffset(ZoneOffset.UTC).format(UTC_FORMAT);
-        String now      = LocalDateTime.now().atOffset(ZoneOffset.UTC).format(UTC_FORMAT);
+        String now      = LocalDateTime.now(ZoneOffset.UTC).atOffset(ZoneOffset.UTC).format(UTC_FORMAT);
         return "BEGIN:VCALENDAR\r\n" +
                "VERSION:2.0\r\n" +
                "PRODID:-//Medical Center//RU\r\n" +
